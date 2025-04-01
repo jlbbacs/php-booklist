@@ -6,6 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <title>Book List</title>
+    <style>
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+       
+        .btn-group-responsive {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (min-width: 576px) {
+            .btn-group-responsive {
+                flex-direction: row;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-light">
@@ -19,46 +39,20 @@
 
         <?php
         session_start();
-        if (isset($_SESSION["create"])) {
-            ?>
-            <div class="alert alert-success">
-                <?php 
-                    echo $_SESSION["create"];
-                    unset($_SESSION["create"]);
-                ?>
-            </div>
-            <?php
-        }
-        ?>
-
-        <?php
-        if (isset($_SESSION["edit"])) {
-            ?>
-            <div class="alert alert-success">
-                <?php 
-                    echo $_SESSION["edit"];
-                    unset($_SESSION["edit"]);
-                ?>
-            </div>
-            <?php
-        }
-        ?>
-
-        <?php
-        if (isset($_SESSION["delete"])) {
-            ?>
-            <div class="alert alert-success">
-                <?php 
-                    echo $_SESSION["delete"];
-                    unset($_SESSION["delete"]);
-                ?>
-            </div>
-            <?php
+        $alerts = ['create', 'edit', 'delete'];
+        foreach ($alerts as $alert) {
+            if (isset($_SESSION[$alert])) {
+                echo '<div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                        ' . $_SESSION[$alert] . '
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>';
+                unset($_SESSION[$alert]);
+            }
         }
         ?>
 
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped table-sm">
                 <thead class="table-dark text-center">
                     <tr>
                         <th>#</th>
@@ -77,11 +71,11 @@
                     ?>
                         <tr>
                             <td class="text-center"><?php echo $row["id"] ?></td>
-                            <td><?php echo $row["title"] ?></td>
-                            <td><?php echo $row["author"] ?></td>
-                            <td><?php echo $row["type"] ?></td>
+                            <td class="text-wrap"><?php echo $row["title"] ?></td>
+                            <td class="text-wrap"><?php echo $row["author"] ?></td>
+                            <td class="text-wrap"><?php echo $row["type"] ?></td>
                             <td class="text-center">
-                                <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
+                                <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-2">
                                     <a href="view.php?id=<?php echo $row["id"] ?>" class="btn btn-info btn-sm">👀 Read More</a>
                                     <a href="edit.php?id=<?php echo $row["id"] ?>" class="btn btn-warning btn-sm">✏️ Edit</a>
                                     <button onclick="confirmDelete(<?php echo $row['id']; ?>)" class="btn btn-danger btn-sm">🗑 Delete</button>
@@ -94,6 +88,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function confirmDelete(id) {
             if (confirm("Are you sure you want to delete this record?")) {
@@ -101,7 +96,6 @@
             }
         }
     </script>
-
 </body>
 
 </html>

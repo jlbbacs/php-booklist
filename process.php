@@ -1,21 +1,19 @@
 <?php
 include("connect.php");
 
-// Check if database connection is successful
+
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 
-session_start(); // Ensure session is started
+session_start(); 
 
-// CREATE operation
 if (isset($_POST["create"])) {
     $title = mysqli_real_escape_string($conn, $_POST["title"]);
     $author = mysqli_real_escape_string($conn, $_POST["author"]);
     $type = mysqli_real_escape_string($conn, $_POST["type"]);
     $description = mysqli_real_escape_string($conn, $_POST["description"]);
 
-    // Debugging: Check if values are received
     if (empty($title) || empty($author) || empty($type) || empty($description)) {
         die("Error: All fields are required.");
     }
@@ -28,11 +26,10 @@ if (isset($_POST["create"])) {
         header("Location: index.php");
         exit;
     } else {
-        die("Error inserting record: " . mysqli_error($conn)); // Debugging
+        die("Error inserting record: " . mysqli_error($conn)); 
     }
 }
 
-// UPDATE operation
 if (isset($_POST["edit"])) {
     $title = mysqli_real_escape_string($conn, $_POST["title"]);
     $author = mysqli_real_escape_string($conn, $_POST["author"]);
@@ -56,10 +53,10 @@ if (isset($_POST["edit"])) {
         header("Location: index.php");
         exit;
     } else {
-        die("Error updating record: " . mysqli_error($conn)); // Debugging
+        die("Error updating record: " . mysqli_error($conn)); 
     }
 }
 
-// Close database connection
+
 mysqli_close($conn);
 ?>
