@@ -6,6 +6,8 @@ if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 
+session_start(); // Ensure session is started
+
 // CREATE operation
 if (isset($_POST["create"])) {
     $title = mysqli_real_escape_string($conn, $_POST["title"]);
@@ -13,13 +15,20 @@ if (isset($_POST["create"])) {
     $type = mysqli_real_escape_string($conn, $_POST["type"]);
     $description = mysqli_real_escape_string($conn, $_POST["description"]);
 
+    // Debugging: Check if values are received
+    if (empty($title) || empty($author) || empty($type) || empty($description)) {
+        die("Error: All fields are required.");
+    }
+
     $sql = "INSERT INTO books (title, author, type, description) 
             VALUES ('$title', '$author', '$type', '$description')";
 
     if (mysqli_query($conn, $sql)) {
-        echo "Record successfully inserted";
+        $_SESSION["create"] = "Record created successfully!";
+        header("Location: index.php");
+        exit;
     } else {
-        die("Error inserting record: " . mysqli_error($conn));
+        die("Error inserting record: " . mysqli_error($conn)); // Debugging
     }
 }
 
@@ -31,6 +40,10 @@ if (isset($_POST["edit"])) {
     $id = mysqli_real_escape_string($conn, $_POST["id"]);
     $description = mysqli_real_escape_string($conn, $_POST["description"]);
 
+    if (empty($id) || empty($title) || empty($author) || empty($type) || empty($description)) {
+        die("Error: All fields are required for update.");
+    }
+
     $sql = "UPDATE books SET 
                 title='$title', 
                 author='$author', 
@@ -39,12 +52,14 @@ if (isset($_POST["edit"])) {
             WHERE id='$id'";
 
     if (mysqli_query($conn, $sql)) {
-        echo "Record Updated";
+        $_SESSION["edit"] = "Edit successful!";
+        header("Location: index.php");
+        exit;
     } else {
-        die("Error updating record: " . mysqli_error($conn));
+        die("Error updating record: " . mysqli_error($conn)); // Debugging
     }
 }
 
-// Close database connection (optional)
+// Close database connection
 mysqli_close($conn);
 ?>
